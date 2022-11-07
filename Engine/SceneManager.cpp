@@ -16,9 +16,9 @@ SceneManager::~SceneManager()
 void SceneManager::Initialize()
 {
     //Å‰‚ÌƒV[ƒ“‚ğ€”õ
-    currentSceneID_ = SCENE_ID_TITLE;
+    currentSceneID_ = SCENE_ID_PLAY;
     nextSceneID_ = currentSceneID_;
-    Instantiate<TitleScene>(this);
+    Instantiate<PlayScene>(this);
 }
 
 void SceneManager::Update()

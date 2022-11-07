@@ -14,7 +14,7 @@ void PlayScene::Initialize()
 {
 	//必要オブジェクトの呼び出し
 	Instantiate<Player>(this);
-	Instantiate<Enemy>(this);
+	//Instantiate<Enemy>(this);
 
 }
 
