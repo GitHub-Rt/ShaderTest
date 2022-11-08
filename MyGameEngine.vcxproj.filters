@@ -169,5 +169,6 @@
     <FxCompile Include="Simple3D.hlsl">
       <Filter>リソース ファイル</Filter>
     </FxCompile>
+    <FxCompile Include="test.hlsl" />
   </ItemGroup>
 </Project>
