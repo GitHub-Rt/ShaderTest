@@ -12,8 +12,9 @@ void Camera::Initialize()
 	position_ = XMVectorSet(0, 3, -20, 0);	//カメラの位置
 	target_ = XMVectorSet(0, 0, 0, 0);		//カメラの焦点
 
-	//プロジェクション行列
-	projMatrix_ = XMMatrixPerspectiveFovLH(XM_PIDIV4, (FLOAT)800 / (FLOAT)600, 0.1f, 100.0f);
+	//プロジェクション行列                  v----視野角　この場合45°をラジアンで表記 --> XMConvertToRadians(x°)で表記しても問題ない
+	projMatrix_ = XMMatrixPerspectiveFovLH(XM_PIDIV4, (FLOAT)800 / (FLOAT)600, 0.5f, 100.0f);
+	//                                          アスペクト比 ------↑           ↑----　これより近いものは表示しないよって値が第三引数(近クリッピング)、最後の引数はこれより遠いものは描画しないよの値(遠クリッピング)
 }
 
 //更新

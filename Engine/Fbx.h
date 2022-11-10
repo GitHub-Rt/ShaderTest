@@ -23,10 +23,12 @@ class Fbx
 	//コンスタントバッファ
 	struct CONSTANT_BUFFER
 	{
-		XMMATRIX	matWVP;			//ワールド・ビュー・プロダクションの合成行列
-		XMMATRIX	matNormal;		//法線変形用の行列
-		XMFLOAT4	diffuseColor;	//マテリアルの色
-		int			isTexture;		//テクスチャがあるかどうかを判断
+		XMMATRIX matWVP;
+
+		//XMMATRIX	matWVP;			//ワールド・ビュー・プロダクションの合成行列
+		//XMMATRIX	matNormal;		//法線変形用の行列
+		//XMFLOAT4	diffuseColor;	//マテリアルの色
+		//int			isTexture;		//テクスチャがあるかどうかを判断
 	};
 
 	//ヴァーテックス
