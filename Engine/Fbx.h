@@ -24,6 +24,8 @@ class Fbx
 	struct CONSTANT_BUFFER
 	{
 		XMMATRIX matWVP;
+		XMFLOAT4 color;
+		int	 isTexture;
 
 		//XMMATRIX	matWVP;			//ワールド・ビュー・プロダクションの合成行列
 		//XMMATRIX	matNormal;		//法線変形用の行列

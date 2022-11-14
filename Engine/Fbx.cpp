@@ -193,6 +193,7 @@ void Fbx::IntConstantBuffer()
 //マテリアル
 void Fbx::InitMaterial(fbxsdk::FbxNode* pNode)
 {
+	//マテリアルの個数分作る
 	pMaterialList_ = new MATERIAL[materialCount_];
 
 
@@ -247,17 +248,23 @@ void Fbx::InitMaterial(fbxsdk::FbxNode* pNode)
 void Fbx::Draw(Transform& transform)
 {
 	Direct3D::SetShader(SHADER_3D);
-
 	transform.Calclation();
-
-
 
 	for (int i = 0; i < materialCount_; i++)
 	{
 		CONSTANT_BUFFER cb;
 
 		//XMMatrixTranspose() --> 行列の行と列を入れ替える関数
-		cb.matWVP = XMMatrixTranspose(transform.GetWorldMatrix() * Camera::GetViewMatrix() * Camera::GetProjectionMatrix());		
+		cb.matWVP = XMMatrixTranspose(transform.GetWorldMatrix() * Camera::GetViewMatrix() * Camera::GetProjectionMatrix());
+		cb.color = pMaterialList_[i].diffuse;
+		if (pMaterialList_[i].pTexture == nullptr)
+		{
+			cb.isTexture = false;
+		}
+		else
+		{
+			cb.isTexture = true;
+		}
 
 		/*cb.matWVP = XMMatrixTranspose(transform.GetWorldMatrix() * Camera::GetViewMatrix() * Camera::GetProjectionMatrix());
 		cb.matNormal = XMMatrixTranspose(transform.GetNormalMatrix());
