@@ -22,7 +22,7 @@ void Player::Initialize()
     pFbx = new Fbx;
     pFbx->Load("Assets\\torus.fbx");
 
-    
+    transform_.position_.z = -5.0f;
 }
 
 //XV

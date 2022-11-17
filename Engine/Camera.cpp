@@ -47,3 +47,8 @@ XMMATRIX Camera::GetProjectionMatrix()
 {
 	return (projMatrix_);
 }
+
+XMVECTOR Camera::GetPosition()
+{
+	return position_;
+}
