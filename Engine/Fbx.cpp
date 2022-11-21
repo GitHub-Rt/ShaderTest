@@ -199,8 +199,21 @@ void Fbx::InitMaterial(fbxsdk::FbxNode* pNode)
 
 	for (int i = 0; i < materialCount_; i++)
 	{
-		//i番目のマテリアル情報を取得
-		FbxSurfaceMaterial* pMaterial = pNode->GetMaterial(i);
+
+		//マテリアルの色
+		FbxSurfacePhong* pMaterial = (FbxSurfacePhong*)pNode->GetMaterial(i);
+		FbxDouble3  diffuse = pMaterial->Diffuse;
+		FbxDouble3	ambient = pMaterial->Ambient;
+
+		//Maya側で指定したマテリアルがフォンシェーディングだったら
+		if (pMaterial->GetClassId().Is(FbxSurfacePhong::ClassId))
+		{
+			FbxDouble3	specular = pMaterial->Specular;		//ハイライトの色
+			FbxDouble shiness = pMaterial->Shininess;		//ハイライトの強さ
+		}
+
+
+		pMaterialList_[i].diffuse = XMFLOAT4((float)diffuse[0], (float)diffuse[1], (float)diffuse[2], 1.0f);
 
 		//テクスチャ情報
 		FbxProperty  lProperty = pMaterial->FindProperty(FbxSurfaceMaterial::sDiffuse);
@@ -235,10 +248,7 @@ void Fbx::InitMaterial(fbxsdk::FbxNode* pNode)
 		{
 			pMaterialList_[i].pTexture = nullptr;
 
-			//マテリアルの色
-			FbxSurfaceLambert* pMaterial = (FbxSurfaceLambert*)pNode->GetMaterial(i);
-			FbxDouble3  diffuse = pMaterial->Diffuse;
-			pMaterialList_[i].diffuse = XMFLOAT4((float)diffuse[0], (float)diffuse[1], (float)diffuse[2], 1.0f);
+			
 		}
 	}
 }

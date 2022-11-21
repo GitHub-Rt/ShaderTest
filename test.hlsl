@@ -21,6 +21,10 @@ struct VS_OUT
 	float2 uv : TEXCOORD;
 	float4 color : COLOR0;
 	float4 specular : COLOR1;
+	float V : XCODE0;
+	float R : XCODE1;
+	float4 light : XCODE2;
+	float4 normal : XCODE3;
 };
 
 
@@ -34,24 +38,24 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL )
 	outData.pos = mul(pos,matWVP);		//ベクトルを行列で変形させる関数 --> mul(ベクトル,行列)
 	outData.uv = uv;
 	
-	float4 light = float4(1, 1, -1, 0);
-	light = normalize(light);
+	outData.light = float4(1, 1, -1, 0);
+	outData.light = normalize(outData.light);
 
 	//法線
-	normal = mul(normal, matNormal);
+	outData.normal = mul(normal, matNormal);
+	outData.normal.w = 0;
 
-	outData.color = dot(normal, light);
-	outData.color = clamp(outData.color, 0, 1);
+	//outData.color = dot(normal, light);
+	//outData.color = clamp(outData.color, 0, 1);
 
-	//視線ベクトル(頂点からカメラに向かうベクトル)
-	float V = normalize( camPos - mul( pos, matW ) );
-	
-	//反射した光のベクトル   : reflect関数(ベクトル、法線)
-	float4 R = reflect(light, normal);
+	////視線ベクトル(頂点からカメラに向かうベクトル)
+	//outData.V = normalize(camPos - mul(pos, matW));
 
-	//内積のべき乗でハイライトになる
-	outData.specular = pow( clamp( dot(R, V), 0, 1), 5) * 5;
+	////反射した光のベクトル   : reflect関数(ベクトル、法線)
+	//outData.R = reflect(light, normal);
 
+	////内積のべき乗でハイライトになる
+	//outData.specular = pow(clamp(dot(R, V), 0, 1), 5) * 5;
 
 	//まとめて渡す
 	return outData;
@@ -63,6 +67,22 @@ float4 PS(VS_OUT inData) : SV_TARGET
 {
 	float4 diffuse;
 	float4 ambient;
+
+
+	inData.color = dot(inData.normal, inData.light);
+	inData.color = clamp(inData.color, 0, 1);
+
+	//視線ベクトル(頂点からカメラに向かうベクトル)
+	inData.V = normalize(camPos - mul(inData.pos, matW));
+
+	//反射した光のベクトル   : reflect関数(ベクトル、法線)
+	inData.R = reflect(inData.light, inData.normal);
+
+	//内積のべき乗でハイライトになる
+	inData.specular = pow(clamp(dot(inData.R, inData.V), 0, 1), 5) * 5;
+
+
+	
 
 
 	if (isTexture == true)
