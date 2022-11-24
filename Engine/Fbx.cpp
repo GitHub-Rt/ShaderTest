@@ -205,15 +205,26 @@ void Fbx::InitMaterial(fbxsdk::FbxNode* pNode)
 		FbxDouble3  diffuse = pMaterial->Diffuse;
 		FbxDouble3	ambient = pMaterial->Ambient;
 
+		FbxDouble3	specular;
+		FbxDouble shiness;
+
 		//Maya側で指定したマテリアルがフォンシェーディングだったら
 		if (pMaterial->GetClassId().Is(FbxSurfacePhong::ClassId))
 		{
-			FbxDouble3	specular = pMaterial->Specular;		//ハイライトの色
-			FbxDouble shiness = pMaterial->Shininess;		//ハイライトの強さ
+			specular = pMaterial->Specular;		//ハイライトの色
+			shiness = pMaterial->Shininess;		//ハイライトの強さ
+		}
+		else
+		{
+			specular = (FbxDouble3)(1,1,1);
+			shiness = (FbxDouble)1;
 		}
 
 
 		pMaterialList_[i].diffuse = XMFLOAT4((float)diffuse[0], (float)diffuse[1], (float)diffuse[2], 1.0f);
+		pMaterialList_[i].ambient = XMFLOAT4((float)ambient[0], (float)ambient[1], (float)ambient[2], 1.0f);
+		pMaterialList_[i].specular = XMFLOAT4((float)specular[0], (float)specular[1], (float)specular[2], 1.0f);
+		pMaterialList_[i].shiness = shiness;
 
 		//テクスチャ情報
 		FbxProperty  lProperty = pMaterial->FindProperty(FbxSurfaceMaterial::sDiffuse);
@@ -268,8 +279,11 @@ void Fbx::Draw(Transform& transform)
 		cb.matW = XMMatrixTranspose(transform.GetWorldMatrix());
 		cb.matWVP = XMMatrixTranspose(transform.GetWorldMatrix() * Camera::GetViewMatrix() * Camera::GetProjectionMatrix());
 		cb.matNormal = XMMatrixTranspose(transform.GetNormalMatrix());
+		XMStoreFloat4(&cb.camPos, Camera::GetPosition());
 		cb.color = pMaterialList_[i].diffuse;
-		XMStoreFloat4(&cb.camPos,Camera::GetPosition());
+		cb.ambient = pMaterialList_[i].ambient;
+		cb.specular = pMaterialList_[i].specular;
+		cb.shiness = pMaterialList_[i].shiness;
 		if (pMaterialList_[i].pTexture == nullptr)
 		{
 			cb.isTexture = false;

@@ -10,8 +10,11 @@ cbuffer global
 	float4x4 matW;			//ワールド行列
 	float4x4 matWVP;		//ワールド・ビュー・プロダクションの合成行列
 	float4x4 matNormal;		//法線変形させるための行列
-	float4	 color;			//マテリアルの色
 	float4  camPos;			//カメラの位置
+	float4	 color;			//マテリアルの色
+	float4 ambient;			//環境光
+	float4 specular;		//ハイライトの色
+	float	shiness;		//ハイライトの強さ
 	bool	 isTexture;		//テクスチャの有無
 };
 
@@ -66,7 +69,7 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL )
 float4 PS(VS_OUT inData) : SV_TARGET
 {
 	float4 diffuse;
-	float4 ambient;
+	float4 ambient_ = ambient;
 
 
 	inData.color = dot(inData.normal, inData.light);
@@ -79,8 +82,8 @@ float4 PS(VS_OUT inData) : SV_TARGET
 	inData.R = reflect(inData.light, inData.normal);
 
 	//内積のべき乗でハイライトになる
-	inData.specular = pow(clamp(dot(inData.R, inData.V), 0, 1), 5) * 5;
-
+	//inData.specular = pow(clamp(dot(inData.R, inData.V), 0, 1), 5) * 5;
+	inData.specular = pow(clamp(dot(inData.R, inData.V), 0, 1), shiness) * specular;
 
 	
 
@@ -88,12 +91,12 @@ float4 PS(VS_OUT inData) : SV_TARGET
 	if (isTexture == true)
 	{
 		diffuse = tex.Sample(smp, inData.uv) * inData.color;
-		ambient = tex.Sample(smp, inData.uv) * 0.8f;
+		//ambient_ += tex.Sample(smp, inData.uv) * 0.5f;
 	}
 	else
 	{
 		diffuse = color * inData.color;
-		ambient = color * 0.3f;
+		//ambient_ = color * 0.5f;
 	}
-	return diffuse + ambient + inData.specular;
+	return diffuse + ambient_ + inData.specular;
 }

@@ -18,6 +18,9 @@ class Fbx
 	{
 		Texture* pTexture;
 		XMFLOAT4	diffuse;	
+		XMFLOAT4 ambient;	
+		XMFLOAT4 specular;	
+		float shiness;	
 	};
 
 	//コンスタントバッファ
@@ -26,8 +29,11 @@ class Fbx
 		XMMATRIX matW;		//ワールド行列
 		XMMATRIX matWVP;	//ワールド・ビュー・プロダクションの合成行列
 		XMMATRIX matNormal;	//法線変形用の行列
-		XMFLOAT4 color;	//マテリアルの色
 		XMFLOAT4 camPos;	//カメラの位置
+		XMFLOAT4 color;	//マテリアルの色
+		XMFLOAT4 ambient;	//環境光
+		XMFLOAT4 specular;	//ハイライトの色
+		float shiness;	//ハイライトの強さ
 		int	 isTexture;	//テクスチャがあるかどうかを判断
 	};
 
