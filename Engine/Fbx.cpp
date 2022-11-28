@@ -216,7 +216,7 @@ void Fbx::InitMaterial(fbxsdk::FbxNode* pNode)
 		}
 		else
 		{
-			specular = (FbxDouble3)(1,1,1);
+			specular = (FbxDouble3)(0,0,0);
 			shiness = (FbxDouble)1;
 		}
 
@@ -280,6 +280,7 @@ void Fbx::Draw(Transform& transform)
 		cb.matWVP = XMMatrixTranspose(transform.GetWorldMatrix() * Camera::GetViewMatrix() * Camera::GetProjectionMatrix());
 		cb.matNormal = XMMatrixTranspose(transform.GetNormalMatrix());
 		XMStoreFloat4(&cb.camPos, Camera::GetPosition());
+		cb.camPos.w = 0;
 		cb.color = pMaterialList_[i].diffuse;
 		cb.ambient = pMaterialList_[i].ambient;
 		cb.specular = pMaterialList_[i].specular;
