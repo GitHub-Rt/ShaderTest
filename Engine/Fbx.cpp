@@ -65,6 +65,13 @@ HRESULT Fbx::Load(std::string fileName)
 
 	//マネージャ解放
 	pFbxManager->Destroy();
+	
+	
+
+	pTexToon_ = new Texture;
+	pTexToon_->Load("Assets/toon.png");
+
+
 	return S_OK;
 }
 
@@ -307,12 +314,18 @@ void Fbx::Draw(Transform& transform)
 
 		if (pMaterialList_[i].pTexture)
 		{
+			//サンプラーを渡す
 			ID3D11SamplerState* pSampler = pMaterialList_[i].pTexture->GetSampler();
 			Direct3D::pContext->PSSetSamplers(0, 1, &pSampler);
 
+			//テクスチャを渡す
 			ID3D11ShaderResourceView* pSRV = pMaterialList_[i].pTexture->GetSRV();
 			Direct3D::pContext->PSSetShaderResources(0, 1, &pSRV);
 		}
+
+		
+		ID3D11ShaderResourceView* pSRVToon = pTexToon_->GetSRV();
+		Direct3D::pContext->PSSetShaderResources(1, 1, &pSRVToon);
 
 		Direct3D::pContext->Unmap(pConstantBuffer_, 0);	//再開
 
@@ -338,6 +351,9 @@ void Fbx::Draw(Transform& transform)
 //解放処理
 void Fbx::Release()
 {
+	pTexToon_->Release();
+	SAFE_DELETE(pTexToon_);
+
 	SAFE_RELEASE(pConstantBuffer_);
 
 	for (int i = 0; i < materialCount_; i++)

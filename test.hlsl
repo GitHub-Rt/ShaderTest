@@ -3,6 +3,7 @@
 Texture2D tex : register(t0);		//テクスチャーを受け取る
 SamplerState smp : register(s0);	//サンプルを受け取る
 
+Texture2D texToon : register(t1);
 
 
 cbuffer global
@@ -75,6 +76,15 @@ float4 PS(VS_OUT inData) : SV_TARGET
 	inData.color = dot(inData.normal, inData.light);
 	inData.color = clamp(inData.color, 0, 1);
 
+
+	//影をはっきりさせる(アニメ調)
+
+	float2 uv;
+	uv.x = inData.color;
+	uv.y = 0;
+	//return texToon.Sample(smp, uv);
+
+
 	//視線ベクトル(頂点からカメラに向かうベクトル)
 	inData.V = normalize(camPos - mul(inData.pos, matW));
 
@@ -89,13 +99,13 @@ float4 PS(VS_OUT inData) : SV_TARGET
 
 	if (isTexture == true)
 	{
-		diffuse = tex.Sample(smp, inData.uv) * inData.color;
+		diffuse = tex.Sample(smp, inData.uv) * texToon.Sample(smp, uv);
 		ambient_ = tex.Sample(smp, inData.uv) * ambient;
 	}
 	else
 	{
-		diffuse = color * inData.color;
+		diffuse = color * texToon.Sample(smp, uv);
 		ambient_ = color * ambient;
 	}
-	return diffuse + ambient_ + inData.specular;
+	return diffuse /* + ambient_ */ + inData.specular;
 }
