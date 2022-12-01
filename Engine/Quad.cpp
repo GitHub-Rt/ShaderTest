@@ -52,7 +52,7 @@ HRESULT Quad::Initialize()
 //描画
 void Quad::Draw(Transform& transform)
 {
-	Direct3D::SetShader(SHADER_3D);
+	Direct3D::SetShader(SHADER_OUTLINE);
 
 	//コンスタントバッファに情報を渡す
 	PassDataToCB(transform);

@@ -109,3 +109,23 @@ float4 PS(VS_OUT inData) : SV_TARGET
 	}
 	return diffuse /* + ambient_ */ + inData.specular;
 }
+
+
+
+//輪郭表示用
+
+//頂点シェーダー
+float4 VS_Outline(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL) : SV_POSITION
+{
+	normal.w = 0;
+	pos += normal * 0.05f;
+
+	pos = mul(pos, matWVP);
+	return pos;
+}
+
+//ピクセルシェーダー
+float4 PS_Outline(VS_OUT inData) : SV_TARGET
+{
+	return float4(0,0,0,1);
+}
