@@ -170,5 +170,6 @@
       <Filter>リソース ファイル</Filter>
     </FxCompile>
     <FxCompile Include="test.hlsl" />
+    <FxCompile Include="Normalmap.hlsl" />
   </ItemGroup>
 </Project>

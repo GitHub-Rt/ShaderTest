@@ -97,6 +97,23 @@ void Fbx::InitVertex(fbxsdk::FbxMesh* pMesh)
 			FbxVector4 Normal;
 			pMesh->GetPolygonVertexNormal(poly, vertex, Normal);	//ｉ番目のポリゴンの、ｊ番目の頂点の法線をゲット
 			vertices[index].normal = XMVectorSet((float)Normal[0], (float)Normal[1], (float)Normal[2], 0.0f);
+
+		}
+	}
+
+
+	//タンジェント取得
+	for (int i = 0; i < polygonCount_; i++)
+	{
+		int startIndex = pMesh->GetPolygonVertexIndex(i);
+
+		FbxGeometryElementTangent* t = pMesh->GetElementTangent(0);
+		FbxVector4 tangent = t->GetDirectArray().GetAt(startIndex).mData;
+
+		for (int j = 0; j < 3; j++)
+		{
+			int index = pMesh->GetPolygonVertices()[startIndex + j];
+			vertices[index].tangent = XMVectorSet((float)tangent[0], (float)tangent[1], (float)tangent[2], 0.0f);
 		}
 	}
 
@@ -226,41 +243,84 @@ void Fbx::InitMaterial(fbxsdk::FbxNode* pNode)
 		pMaterialList_[i].specular = XMFLOAT4((float)specular[0], (float)specular[1], (float)specular[2], 1.0f);
 		pMaterialList_[i].shiness = shiness;
 
-		//テクスチャ情報
-		FbxProperty  lProperty = pMaterial->FindProperty(FbxSurfaceMaterial::sDiffuse);
-
-		//テクスチャの数数
-		int fileTextureCount = lProperty.GetSrcObjectCount<FbxFileTexture>();
-
-		//テクスチャあり
-		if (fileTextureCount != 0)
+		//　普通のテクスチャの処理
 		{
-			FbxFileTexture* textureInfo = lProperty.GetSrcObject<FbxFileTexture>(0);
-			const char* textureFilePath = textureInfo->GetRelativeFileName();
+			//テクスチャ情報
+			FbxProperty  lProperty = pMaterial->FindProperty(FbxSurfaceMaterial::sDiffuse);
 
-			//ファイル名+拡張だけにする
-			char name[_MAX_FNAME];	//ファイル名
-			char ext[_MAX_EXT];	//拡張子
-			_splitpath_s(textureFilePath, nullptr, 0, nullptr, 0, name, _MAX_FNAME, ext, _MAX_EXT);
-			sprintf_s(name, "%s%s", name, ext);
+			//テクスチャの数数
+			int fileTextureCount = lProperty.GetSrcObjectCount<FbxFileTexture>();
+
+			//テクスチャあり
+			if (fileTextureCount != 0)
+			{
+				FbxFileTexture* textureInfo = lProperty.GetSrcObject<FbxFileTexture>(0);
+				const char* textureFilePath = textureInfo->GetRelativeFileName();
+
+				//ファイル名+拡張だけにする
+				char name[_MAX_FNAME];	//ファイル名
+				char ext[_MAX_EXT];	//拡張子
+				_splitpath_s(textureFilePath, nullptr, 0, nullptr, 0, name, _MAX_FNAME, ext, _MAX_EXT);
+				sprintf_s(name, "%s%s", name, ext);
 
 
-			//ファイルからテクスチャ作成
-			pMaterialList_[i].pTexture = new Texture;
-			wchar_t wtext[FILENAME_MAX];
-			size_t ret;
-			mbstowcs_s(&ret, wtext, name, strlen(textureFilePath));
+				//ファイルからテクスチャ作成
+				pMaterialList_[i].pTexture = new Texture;
+				wchar_t wtext[FILENAME_MAX];
+				size_t ret;
+				mbstowcs_s(&ret, wtext, name, strlen(textureFilePath));
 
-			pMaterialList_[i].pTexture->Load(name);
+				pMaterialList_[i].pTexture->Load(name);
+			}
+
+			//テクスチャ無し
+			else
+			{
+				pMaterialList_[i].pTexture = nullptr;
+			}
 		}
 
-		//テクスチャ無し
-		else
-		{
-			pMaterialList_[i].pTexture = nullptr;
 
-			
+
+
+		// Normalテクスチャ(凹凸をだす)
+		{
+			//テクスチャ情報
+			FbxProperty  lProperty = pMaterial->FindProperty(FbxSurfaceMaterial::sNormalMap);
+
+			//テクスチャの数数
+			int fileTextureCount = lProperty.GetSrcObjectCount<FbxFileTexture>();
+
+			//テクスチャあり
+			if (fileTextureCount != 0)
+			{
+				FbxFileTexture* textureInfo = lProperty.GetSrcObject<FbxFileTexture>(0);
+				const char* textureFilePath = textureInfo->GetRelativeFileName();
+
+				//ファイル名+拡張だけにする
+				char name[_MAX_FNAME];	//ファイル名
+				char ext[_MAX_EXT];	//拡張子
+				_splitpath_s(textureFilePath, nullptr, 0, nullptr, 0, name, _MAX_FNAME, ext, _MAX_EXT);
+				sprintf_s(name, "%s%s", name, ext);
+
+
+				//ファイルからテクスチャ作成
+				pMaterialList_[i].pNormalmap = new Texture;
+				wchar_t wtext[FILENAME_MAX];
+				size_t ret;
+				mbstowcs_s(&ret, wtext, name, strlen(textureFilePath));
+
+				pMaterialList_[i].pNormalmap->Load(name);
+			}
+
+			//テクスチャ無し
+			else
+			{
+				pMaterialList_[i].pNormalmap = nullptr;
+			}
 		}
+
+
 	}
 }
 
@@ -313,6 +373,14 @@ void Fbx::Draw(Transform& transform)
 			ID3D11ShaderResourceView* pSRV = pMaterialList_[i].pTexture->GetSRV();
 			Direct3D::pContext->PSSetShaderResources(0, 1, &pSRV);
 		}
+
+
+		if (pMaterialList_[i].pNormalmap)
+		{
+			ID3D11ShaderResourceView* pSRV = pMaterialList_[i].pNormalmap->GetSRV();
+			Direct3D::pContext->PSSetShaderResources(1, 1, &pSRV);
+		}
+
 
 		Direct3D::pContext->Unmap(pConstantBuffer_, 0);	//再開
 

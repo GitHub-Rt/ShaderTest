@@ -17,6 +17,7 @@ class Fbx
 	struct MATERIAL
 	{
 		Texture* pTexture;
+		Texture* pNormalmap;
 		XMFLOAT4	diffuse;	
 		XMFLOAT4 ambient;	
 		XMFLOAT4 specular;	
@@ -43,6 +44,7 @@ class Fbx
 		XMVECTOR position;	
 		XMVECTOR uv;		
 		XMVECTOR normal;	
+		XMVECTOR tangent;
 	};
 
 	int vertexCount_;	//í∏ì_êî

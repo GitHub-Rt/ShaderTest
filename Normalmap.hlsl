@@ -2,7 +2,7 @@
 //    register ----v　引き出しみたいなもの
 Texture2D tex : register(t0);		//テクスチャーを受け取る
 SamplerState smp : register(s0);	//サンプルを受け取る
-
+Texture2D texNormal:register(t1);	//Normalテクスチャーを受け取る
 
 
 cbuffer global
@@ -48,17 +48,7 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL )
 	outData.normal = mul(normal, matNormal);
 	outData.normal.w = 0;
 
-	//outData.color = dot(normal, light);
-	//outData.color = clamp(outData.color, 0, 1);
-
-	////視線ベクトル(頂点からカメラに向かうベクトル)
-	//outData.V = normalize(camPos - mul(pos, matW));
-
-	////反射した光のベクトル   : reflect関数(ベクトル、法線)
-	//outData.R = reflect(light, normal);
-
-	////内積のべき乗でハイライトになる
-	//outData.specular = pow(clamp(dot(R, V), 0, 1), 5) * 5;
+	
 
 	//まとめて渡す
 	return outData;
@@ -82,7 +72,6 @@ float4 PS(VS_OUT inData) : SV_TARGET
 	inData.R = reflect(inData.light, inData.normal);
 
 	//内積のべき乗でハイライトになる
-	//inData.specular = pow(clamp(dot(inData.R, inData.V), 0, 1), 5) * 5;
 	inData.specular = pow(clamp(dot(inData.R, inData.V), 0, 1), shiness) * specular;
 
 

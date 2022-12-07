@@ -20,9 +20,10 @@ Player::~Player()
 void Player::Initialize()
 {
     pFbx = new Fbx;
-    pFbx->Load("Assets\\torus.fbx");
+    pFbx->Load("Assets\\ball.fbx");
 
-    transform_.position_.z = -5.0f;
+
+    transform_.position_.z = -10.0f;
 }
 
 //XV
