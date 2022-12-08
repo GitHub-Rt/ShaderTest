@@ -22,8 +22,12 @@ void Player::Initialize()
     pFbx = new Fbx;
     pFbx->Load("Assets\\ball.fbx");
 
+    transform_.scale_.x = 1.2f;
+    transform_.scale_.y = 1.2f;
+    transform_.scale_.z = 1.2f;
 
-    transform_.position_.z = -10.0f;
+    transform_.position_.y = 2.0f;
+    transform_.position_.z = -13.0f;
 }
 
 //çXêV

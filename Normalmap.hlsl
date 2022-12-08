@@ -22,17 +22,17 @@ struct VS_OUT
 {
 	float4 pos : SV_POSITION;
 	float2 uv : TEXCOORD;
-	float4 color : COLOR0;
-	float4 specular : COLOR1;
-	float4 V : COLOR2;
-	float4 R : COLOR3;
-	float4 light : COLOR4;
-	float4 normal : COLOR5;
+	float4 color : TEXCOORD1;
+	float4 specular : TEXCOORD2;
+	float4 V : TEXCOORD3;
+	float4 R : TEXCOORD4;
+	float4 light : TEXCOORD5;
+	float4 normal : TEXCOORD6;
 };
 
 
 //頂点シェーダー
-VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL )
+VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL, float4 tangent : TANGENT)
 {
 	//ピクセルシェーダーに渡す変数
 	VS_OUT outData;
@@ -40,15 +40,40 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL )
 	
 	outData.pos = mul(pos,matWVP);		//ベクトルを行列で変形させる関数 --> mul(ベクトル,行列)
 	outData.uv = uv;
-	
-	outData.light = float4(0, 0, -1, 0);
-	outData.light = normalize(outData.light);
 
+	
 	//法線
-	outData.normal = mul(normal, matNormal);
-	outData.normal.w = 0;
+	normal = mul(normal, matNormal);\
+	normal = normalize(normal);
+	normal.w = 0;
 
-	
+
+	tangent = mul(tangent, matNormal);
+	tangent = normalize(tangent);
+	tangent.w = 0;
+
+	//従法線
+	float3 binormal = cross(normal, tangent);
+	binormal = mul(binormal, matNormal);
+	binormal = normalize(binormal);
+
+
+	//視線ベクトル(頂点からカメラに向かうベクトル)
+	float4 eye = normalize(camPos - mul(outData.pos, matW));
+	outData.V.x = dot(eye, tangent);
+	outData.V.y = dot(eye, binormal);
+	outData.V.z = dot(eye, normal);
+	outData.V.w = 0;
+
+
+	//ライト方向
+	float4 light = float4(1, 1, -1, 0);
+	light = normalize(light);
+
+	outData.light.x = dot(light, tangent);
+	outData.light.y = dot(light, binormal);
+	outData.light.z = dot(light, normal);
+	outData.light.w = 0;
 
 	//まとめて渡す
 	return outData;
@@ -62,14 +87,18 @@ float4 PS(VS_OUT inData) : SV_TARGET
 	float4 ambient_;
 
 
-	inData.color = dot(inData.normal, inData.light);
+	float4 normal = texNormal.Sample(smp, inData.uv) * 2 - 1;
+	normal.w = 0;
+	normal = normalize(normal);
+
+
+	inData.color = dot(normal, inData.light);
 	inData.color = clamp(inData.color, 0, 1);
 
-	//視線ベクトル(頂点からカメラに向かうベクトル)
-	inData.V = normalize(camPos - mul(inData.pos, matW));
+	
 
 	//反射した光のベクトル   : reflect関数(ベクトル、法線)
-	inData.R = reflect(inData.light, inData.normal);
+	inData.R = reflect(inData.light, normal);
 
 	//内積のべき乗でハイライトになる
 	inData.specular = pow(clamp(dot(inData.R, inData.V), 0, 1), shiness) * specular;

@@ -286,7 +286,7 @@ void Fbx::InitMaterial(fbxsdk::FbxNode* pNode)
 		// Normalテクスチャ(凹凸をだす)
 		{
 			//テクスチャ情報
-			FbxProperty  lProperty = pMaterial->FindProperty(FbxSurfaceMaterial::sNormalMap);
+			FbxProperty  lProperty = pMaterial->FindProperty(FbxSurfaceMaterial::sBump);
 
 			//テクスチャの数数
 			int fileTextureCount = lProperty.GetSrcObjectCount<FbxFileTexture>();
