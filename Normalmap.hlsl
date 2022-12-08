@@ -115,5 +115,9 @@ float4 PS(VS_OUT inData) : SV_TARGET
 		diffuse = color * inData.color;
 		ambient_ = color * ambient;
 	}
-	return diffuse + ambient_ + inData.specular;
+	float4 result =  diffuse + ambient_ + inData.specular;
+
+	result.a = 0;
+
+	return result;
 }
