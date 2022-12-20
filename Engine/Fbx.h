@@ -36,6 +36,7 @@ class Fbx
 		XMFLOAT4 specular;	//ハイライトの色
 		float shiness;	//ハイライトの強さ
 		int	 isTexture;	//テクスチャがあるかどうかを判断
+		float scroll;	//uvスクロール
 	};
 
 	//ヴァーテックス

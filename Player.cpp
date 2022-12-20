@@ -20,20 +20,20 @@ Player::~Player()
 void Player::Initialize()
 {
     pFbx = new Fbx;
-    pFbx->Load("Assets\\ball.fbx");
+    pFbx->Load("Assets\\water.fbx");
 
-    transform_.scale_.x = 1.2f;
-    transform_.scale_.y = 1.2f;
-    transform_.scale_.z = 1.2f;
+    transform_.scale_.x = 2.0f;
+    transform_.scale_.y = 2.0f;
+    transform_.scale_.z = 2.0f;
 
-    transform_.position_.y = 2.0f;
-    transform_.position_.z = -13.0f;
+    transform_.position_.y = 1.2f;
+    transform_.position_.z = -10.0f;
 }
 
 //çXêV
 void Player::Update()
 {
-    transform_.rotate_.y++;
+    //transform_.rotate_.y++;
 }
 
 void Player::UpdateSub()

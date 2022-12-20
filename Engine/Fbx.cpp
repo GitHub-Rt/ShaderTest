@@ -328,6 +328,9 @@ void Fbx::InitMaterial(fbxsdk::FbxNode* pNode)
 //•`‰æ
 void Fbx::Draw(Transform& transform)
 {
+	static float scroll = 0.0f;
+	scroll += 0.001f;
+
 	Direct3D::SetShader(SHADER_3D);
 	transform.Calclation();
 
@@ -353,6 +356,7 @@ void Fbx::Draw(Transform& transform)
 		{
 			cb.isTexture = true;
 		}
+		cb.scroll = scroll;
 
 		/*cb.matWVP = XMMatrixTranspose(transform.GetWorldMatrix() * Camera::GetViewMatrix() * Camera::GetProjectionMatrix());
 		cb.matNormal = XMMatrixTranspose(transform.GetNormalMatrix());
