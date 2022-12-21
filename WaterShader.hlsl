@@ -99,7 +99,7 @@ float4 PS(VS_OUT inData) : SV_TARGET
 
 	float4 normal = normal1 + normal2;
 	normal.w = 0;
-	normal = normalize(normal1);
+	normal = normalize(normal);
 
 
 	inData.color = dot(normal, inData.light);
