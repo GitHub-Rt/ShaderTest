@@ -127,7 +127,7 @@ float4 PS(VS_OUT inData) : SV_TARGET
 	}
 	float4 result = diffuse + ambient_ + inData.specular;
 
-	result.a = 0;
+	result.a = (result.r + result.g + result.b) / 3;
 
 	return result;
 }
