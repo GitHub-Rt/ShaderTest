@@ -48,7 +48,7 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL, f
 	normal = normalize(normal);
 	normal.w = 0;
 
-
+	//ê⁄ê¸
 	tangent = mul(tangent, matNormal);
 	tangent = normalize(tangent);
 	tangent.w = 0;
