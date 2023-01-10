@@ -81,7 +81,7 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL, f
 }
 
 //ピクセルシェーダー
-//（） : セマンティクス----------------v
+// xxx : セマンティクス---------v    渡される値を識別する文字列
 float4 PS(VS_OUT inData) : SV_TARGET
 {
 	float4 diffuse;

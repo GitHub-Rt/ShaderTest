@@ -53,14 +53,14 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL, f
 	tangent.w = 0;
 
 	//従法線
-	float3 binormal = cross(normal, tangent);
+	float3 binormal = cross(normal, tangent);	//cross関数 : 外積を求める
 	binormal = mul(binormal, matNormal);
 	binormal = normalize(binormal);
 
 
 	//視線ベクトル(頂点からカメラに向かうベクトル)
 	float4 eye = normalize(camPos - mul(outData.pos, matW));
-	outData.V.x = dot(eye, tangent);
+	outData.V.x = dot(eye, tangent); //dot関数 ; 内積を求める
 	outData.V.y = dot(eye, binormal);
 	outData.V.z = dot(eye, normal);
 	outData.V.w = 0;
