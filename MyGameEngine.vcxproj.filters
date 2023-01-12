@@ -172,5 +172,6 @@
     <FxCompile Include="test.hlsl" />
     <FxCompile Include="Normalmap.hlsl" />
     <FxCompile Include="WaterShader.hlsl" />
+    <FxCompile Include="PointLight.hlsl" />
   </ItemGroup>
 </Project>

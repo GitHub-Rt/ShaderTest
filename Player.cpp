@@ -20,7 +20,7 @@ Player::~Player()
 void Player::Initialize()
 {
     pFbx = new Fbx;
-    pFbx->Load("Assets\\water.fbx");
+    pFbx->Load("Assets\\Ground.fbx");
 
     transform_.scale_.x = 2.0f;
     transform_.scale_.y = 2.0f;
