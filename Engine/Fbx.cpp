@@ -97,25 +97,24 @@ void Fbx::InitVertex(fbxsdk::FbxMesh* pMesh)
 			FbxVector4 Normal;
 			pMesh->GetPolygonVertexNormal(poly, vertex, Normal);	//ｉ番目のポリゴンの、ｊ番目の頂点の法線をゲット
 			vertices[index].normal = XMVectorSet((float)Normal[0], (float)Normal[1], (float)Normal[2], 0.0f);
-
 		}
 	}
 
 
-	//タンジェント取得
-	for (int i = 0; i < polygonCount_; i++)
-	{
-		int startIndex = pMesh->GetPolygonVertexIndex(i);
+	////タンジェント取得
+	//for (int i = 0; i < polygonCount_; i++)
+	//{
+	//	int startIndex = pMesh->GetPolygonVertexIndex(i);
 
-		FbxGeometryElementTangent* t = pMesh->GetElementTangent(0);
-		FbxVector4 tangent = t->GetDirectArray().GetAt(startIndex).mData;
+	//	FbxGeometryElementTangent* t = pMesh->GetElementTangent(0);
+	//	FbxVector4 tangent = t->GetDirectArray().GetAt(startIndex).mData;
 
-		for (int j = 0; j < 3; j++)
-		{
-			int index = pMesh->GetPolygonVertices()[startIndex + j];
-			vertices[index].tangent = XMVectorSet((float)tangent[0], (float)tangent[1], (float)tangent[2], 0.0f);
-		}
-	}
+	//	for (int j = 0; j < 3; j++)
+	//	{
+	//		int index = pMesh->GetPolygonVertices()[startIndex + j];
+	//		vertices[index].tangent = XMVectorSet((float)tangent[0], (float)tangent[1], (float)tangent[2], 0.0f);
+	//	}
+	//}
 
 	
 	HRESULT hr;

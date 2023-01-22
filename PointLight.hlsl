@@ -28,6 +28,7 @@ struct VS_OUT
 	float4 R : COLOR3;
 	float4 light : COLOR4;
 	float4 normal : COLOR5;
+	float4 lightPos : COLOR6;
 };
 
 
@@ -41,8 +42,12 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL)
 	outData.pos = mul(pos, matWVP);		//ベクトルを行列で変形させる関数 --> mul(ベクトル,行列)
 	outData.uv = uv;
 
-	outData.light = float4(0, 0, -1, 0);
-	outData.light = normalize(outData.light);
+	//ライトの位置
+	outData.lightPos = float4(0, 5, 0, 0);
+
+	////ライトの向き
+	//outData.light = float4(0, 0, -1, 0);
+	//outData.light = normalize(outData.light);
 
 	//法線
 	outData.normal = mul(normal, matNormal);
@@ -71,7 +76,11 @@ float4 PS(VS_OUT inData) : SV_TARGET
 	float4 diffuse;
 	float4 ambient_;
 
+	//頂点の位置から見た光の方向
+	inData.light = inData.pos - inData.lightPos;
+	inData.light = normalize(inData.light);
 
+	
 	inData.color = dot(inData.normal, inData.light);
 	inData.color = clamp(inData.color, 0, 1);
 

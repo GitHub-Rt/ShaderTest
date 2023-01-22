@@ -22,12 +22,7 @@ void Player::Initialize()
     pFbx = new Fbx;
     pFbx->Load("Assets\\Ground.fbx");
 
-    transform_.scale_.x = 2.0f;
-    transform_.scale_.y = 2.0f;
-    transform_.scale_.z = 2.0f;
-
-    transform_.position_.y = 1.2f;
-    transform_.position_.z = -10.0f;
+    transform_.position_.z = -5.0f;
 }
 
 //çXêV
